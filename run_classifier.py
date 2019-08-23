@@ -30,7 +30,12 @@ import pandas as pd
 flags = tf.flags
 
 FLAGS = flags.FLAGS
-
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
+# tf_config = tf.ConfigProto(device_count={'CPU': 5, 'GPU': 0})
+tf_config = tf.ConfigProto(log_device_placement=True)
+tf_config.gpu_options.allow_growth = True
+tf_config.gpu_options.per_process_gpu_memory_fraction = 0.3
+sess = tf.Session(config=tf_config)
 ## Required parameters
 flags.DEFINE_string(
     "data_dir", None,
