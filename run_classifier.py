@@ -866,6 +866,8 @@ def convert_examples_to_features(examples, label_list, max_seq_length,
 
 
 def main(_):
+  # 将 TensorFlow 日志信息输出到屏幕
+  # 默认情况下， tensorflow 在WARN的日志记录级别进行配置，但是在跟踪模型训练时，需要将级别调整为INFO
   tf.logging.set_verbosity(tf.logging.INFO)
 
   processors = {
@@ -875,14 +877,15 @@ def main(_):
       "xnli": XnliProcessor,
       "sim": SimProcessor,
   }
-
+  # 检查给的参数有没有问题
+  # 如果 model是cased model，不能设置--do_lower_case=True`，这样fine-tuning 才能匹配 pre-training model
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
                                                 FLAGS.init_checkpoint)
 
   if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
     raise ValueError(
         "At least one of `do_train`, `do_eval` or `do_predict' must be True.")
-
+  # 得到bert_config.__dict__,以字典形式读取config文件
   bert_config = modeling.BertConfig.from_json_file(FLAGS.bert_config_file)
 
   if FLAGS.max_seq_length > bert_config.max_position_embeddings:
@@ -1059,6 +1062,7 @@ def main(_):
 
 
 if __name__ == "__main__":
+  # 设置必须给的参数
   flags.mark_flag_as_required("data_dir")
   flags.mark_flag_as_required("task_name")
   flags.mark_flag_as_required("vocab_file")
